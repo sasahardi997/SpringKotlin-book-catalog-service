@@ -1,9 +1,11 @@
 package com.kotlinspring.catalogservice.controller
 
 import com.kotlinspring.catalogservice.SpringContext
+import com.kotlinspring.catalogservice.domain.Author
 import com.kotlinspring.catalogservice.domain.Book
 import com.kotlinspring.catalogservice.domain.dto.BookDTO
 import com.kotlinspring.catalogservice.exception.BookServiceErrorResponse
+import com.kotlinspring.catalogservice.repository.AuthorRepository
 import com.kotlinspring.catalogservice.repository.BookRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertNotNull
@@ -19,19 +21,24 @@ class BookControllerIT: SpringContext() {
     @Autowired
     private lateinit var bookRepository: BookRepository
 
+    @Autowired
+    private lateinit var authorRepository: AuthorRepository
+
     private lateinit var webTestClient: WebTestClient
 
     private val BOOKS_URL = "/v1/books"
 
     @BeforeEach
     fun setUp(context: WebApplicationContext) {
+        authorRepository.deleteAll()
         bookRepository.deleteAll()
         webTestClient = MockMvcWebTestClient.bindToApplicationContext(context).build()
     }
 
     @Test
     fun `should return dto with id if created successfully`() {
-        val bookDTO = BookDTO(null, name = "1984", genre = "Novel")
+        val author = authorRepository.save(Author(id = null, name = "George Orwell"))
+        val bookDTO = BookDTO(null, name = "1984", genre = "Novel", author.id)
 
         val result = webTestClient.post()
             .uri(BOOKS_URL)
@@ -89,8 +96,9 @@ class BookControllerIT: SpringContext() {
 
     @Test
     fun `should return all the books from database`() {
-        val book1984 = Book(null, name = "1984", genre = "Novel")
-        val bookIkigai = Book(null, name = "Ikigai", genre = "Popular psychology")
+        val author = authorRepository.save(Author(id = null, name = "George Orwell"))
+        val book1984 = Book(null, name = "1984", genre = "Novel", author)
+        val bookIkigai = Book(null, name = "Ikigai", genre = "Popular psychology", author)
         bookRepository.saveAll(listOf(book1984, bookIkigai))
 
         val list = webTestClient.get()
@@ -108,10 +116,11 @@ class BookControllerIT: SpringContext() {
 
     @Test
     fun `should update an existing book`() {
-        val book1984 = Book(null, name = "1984", genre = "Novel")
+        val author = authorRepository.save(Author(id = null, name = "George Orwell"))
+        val book1984 = Book(null, name = "1984", genre = "Novel", author)
         val savedBook = bookRepository.save(book1984)
 
-        val bookDTO = BookDTO(savedBook.id, name = "1984", genre = "Dystopia Novel")
+        val bookDTO = BookDTO(savedBook.id, name = "1984", genre = "Dystopia Novel", author.id)
 
         val result = webTestClient.put()
             .uri("$BOOKS_URL/${savedBook.id}")
@@ -129,7 +138,7 @@ class BookControllerIT: SpringContext() {
     @Test
     fun `should return not found when book does not exist`() {
         val id = 999L
-        val bookDTO = BookDTO(id, name = "1984", genre = "Dystopia Novel")
+        val bookDTO = BookDTO(id = id, name = "1984", genre = "Dystopia Novel", authorId = id)
 
         val result = webTestClient.put()
             .uri("$BOOKS_URL/$id")
@@ -147,7 +156,8 @@ class BookControllerIT: SpringContext() {
 
     @Test
     fun `delete an existing book should return 204 status`() {
-        val book1984 = Book(null, name = "1984", genre = "Novel")
+        val author = authorRepository.save(Author(id = null, name = "George Orwell"))
+        val book1984 = Book(null, name = "1984", genre = "Novel", author)
         val savedBook = bookRepository.save(book1984)
 
         webTestClient.delete()

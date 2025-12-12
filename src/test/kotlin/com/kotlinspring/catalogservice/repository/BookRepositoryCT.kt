@@ -1,6 +1,7 @@
 package com.kotlinspring.catalogservice.repository
 
 import com.kotlinspring.catalogservice.SpringContext
+import com.kotlinspring.catalogservice.domain.Author
 import com.kotlinspring.catalogservice.domain.Book
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.params.ParameterizedTest
@@ -15,13 +16,19 @@ class BookRepositoryCT: SpringContext() {
     @Autowired
     private lateinit var bookRepository: BookRepository
 
+    @Autowired
+    private lateinit var authorRepository: AuthorRepository
+
     @BeforeEach
     fun setUp() {
+        authorRepository.deleteAll()
         bookRepository.deleteAll()
 
-        val book1984 = Book(null, name = "1984", genre = "Novel")
-        val bookIkigai = Book(null, name = "Ikigai", genre = "Popular psychology")
-        val bookIkigai2ndEdition = Book(null, name = "Ikigai 2nd Edition", genre = "Poplar psychology")
+        val author = authorRepository.save(Author(id = null, name = "George Orwell"))
+
+        val book1984 = Book(null, name = "1984", genre = "Novel", author)
+        val bookIkigai = Book(null, name = "Ikigai", genre = "Popular psychology", author)
+        val bookIkigai2ndEdition = Book(null, name = "Ikigai 2nd Edition", genre = "Poplar psychology", author)
         bookRepository.saveAll(listOf(book1984, bookIkigai, bookIkigai2ndEdition))
     }
 

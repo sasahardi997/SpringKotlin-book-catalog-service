@@ -42,4 +42,11 @@ class GlobalExceptionHandler: ResponseEntityExceptionHandler() {
             .status(HttpStatus.NOT_FOUND)
             .body(BookServiceErrorResponse(HttpStatus.NOT_FOUND.value(), ex.message!!))
     }
+
+    @ExceptionHandler(AuthorNotFoundException::class)
+    fun handleBookNotFoundException(ex: AuthorNotFoundException): ResponseEntity<BookServiceErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(BookServiceErrorResponse(HttpStatus.NOT_FOUND.value(), ex.message!!))
+    }
 }

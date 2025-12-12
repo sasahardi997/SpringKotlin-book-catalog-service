@@ -21,4 +21,9 @@ data class Book(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id", nullable = false)
     val author: Author? = null
-)
+) {
+
+    override fun toString(): String {
+        return "Book(id=$id, name='$name', genre='$genre', authorId=${author?.id})"
+    }
+}

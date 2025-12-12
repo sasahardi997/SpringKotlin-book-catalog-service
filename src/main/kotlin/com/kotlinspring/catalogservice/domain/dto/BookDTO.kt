@@ -1,6 +1,7 @@
 package com.kotlinspring.catalogservice.domain.dto
 
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 
 data class BookDTO(
     val id: Long?,
@@ -9,5 +10,8 @@ data class BookDTO(
     val name: String,
 
     @field:NotBlank("Genre cannot be blank")
-    val genre: String
+    val genre: String,
+
+    @field:NotNull("Author id must not be null")
+    val authorId: Long? = null
 )

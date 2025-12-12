@@ -13,7 +13,7 @@ import jakarta.persistence.Table
 data class Author(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    val id: Int?,
+    val id: Long?,
 
     var name: String,
 
