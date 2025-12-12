@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: catalogdb
+      POSTGRES_USER: cataloguser
+      POSTGRES_PASSWORD: catalogpass
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - catalog-net
+
+volumes:
+  pg_data:
+
+networks:
+  catalog-net:

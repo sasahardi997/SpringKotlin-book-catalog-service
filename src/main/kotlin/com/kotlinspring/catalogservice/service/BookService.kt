@@ -18,7 +18,11 @@ class BookService(val bookRepository: BookRepository,
 
     fun addBook(bookDTO: BookDTO): BookDTO {
         val authorId: Long? = bookDTO.authorId
-        val authorOpt = authorService.findByAuthorId(authorId!!)
+        if(authorId == null) {
+            log.error{"Author id not provided"}
+            throw AuthorNotFoundException("Author id not provided")
+        }
+        val authorOpt = authorService.findByAuthorId(authorId)
 
         if(authorOpt.isEmpty) {
             log.error{"Author with id $authorId not found"}

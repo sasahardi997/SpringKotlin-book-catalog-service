@@ -1,1 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:15:///catalogdb
+    username: test
+    password: test
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
 message: test profile

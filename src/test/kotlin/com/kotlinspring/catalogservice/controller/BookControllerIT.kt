@@ -1,5 +1,6 @@
 package com.kotlinspring.catalogservice.controller
 
+import com.kotlinspring.catalogservice.PostgresTestContainerConfig
 import com.kotlinspring.catalogservice.SpringContext
 import com.kotlinspring.catalogservice.domain.Author
 import com.kotlinspring.catalogservice.domain.Book
